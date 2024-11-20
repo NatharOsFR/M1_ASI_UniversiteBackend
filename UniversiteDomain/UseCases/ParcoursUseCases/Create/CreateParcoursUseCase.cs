@@ -4,7 +4,7 @@ using UniversiteDomain.Entities;
 using UniversiteDomain.Exceptions.EtudiantExceptions;
 using UniversiteDomain.Util;
 
-namespace UniversiteDomain.UseCases.ParcoursUseCases;
+namespace UniversiteDomain.UseCases.ParcoursUseCases.Create;
 
 public class CreateParcoursUseCase(IRepositoryFactory parcoursRepository)
 {

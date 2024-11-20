@@ -2,9 +2,10 @@
 using UniversiteDomain.DataAdapters.DataAdaptersFactory;
 using UniversiteDomain.Entities;
 using UniversiteDomain.Exceptions.EtudiantExceptions;
+using UniversiteDomain.Exceptions.UeExceptions;
 using UniversiteDomain.Util;
 
-namespace UniversiteDomain.UseCases.UeUseCases;
+namespace UniversiteDomain.UseCases.UeUseCases.Create;
 
 public class CreateUeUseCase(IRepositoryFactory UeRepository)
 {
@@ -17,7 +18,7 @@ public class CreateUeUseCase(IRepositoryFactory UeRepository)
     {
         await CheckBusinessRules(ue);
         Ue uee = await UeRepository.UeRepository().CreateAsync(ue);
-        UeRepository.ParcoursRepository().SaveChangesAsync().Wait();
+        UeRepository.SaveChangesAsync().Wait();
         return uee;
     }
     private async Task CheckBusinessRules(Ue ue)
@@ -25,15 +26,15 @@ public class CreateUeUseCase(IRepositoryFactory UeRepository)
         ArgumentNullException.ThrowIfNull(ue);
         ArgumentNullException.ThrowIfNull(ue.NumeroUe);
         ArgumentNullException.ThrowIfNull(ue.Intitule);
-        ArgumentNullException.ThrowIfNull(UeRepository.UeRepository());
+        ArgumentNullException.ThrowIfNull(UeRepository);
         
-        // On recherche un étudiant avec le même numéro étudiant
+        // On recherche une Ue avec le même numéro d'UE
         List<Ue> existe = await UeRepository.UeRepository().FindByConditionAsync(e=>e.NumeroUe.Equals(ue.NumeroUe));
 
-        // Si un étudiant avec le même numéro étudiant existe déjà, on lève une exception personnalisée
-        if (existe .Any()) throw new DuplicateNumUeException(ue.NumeroUe + " - ce numéro d'Ue est déjà affecté à une Ue");
+        // Si une Ue avec le même numéro d'Ue existe déjà, on lève une exception personnalisée
+       if (existe .Any()) throw new DuplicateNumUeException(ue.NumeroUe + " - ce numéro d'Ue est déjà affecté à une Ue");
         
-        if (ue.Intitule.Length < 3) throw new InvalidNomEtudiantException(ue.Intitule +" incorrect - L'intitulé d'une Ue doit contenir plus de 3 caractères");
+       if (ue.Intitule.Length < 3) throw new InvalidNomUeException(ue.Intitule +" incorrect - L'intitulé d'une Ue doit contenir plus de 3 caractères");
         
     }
 }
